@@ -14,17 +14,21 @@ if (-not $changed) {
 }
 
 function Get-BojNumber([string]$path) {
-    # python/src/1697.py
-    if ($path -match 'python[\\/].*[\\/](\d+)\.py') { return $matches[1] }
+    # normalize slashes
+    $p = $path -replace '\\','/'
 
-    # cpp/src/10026.cpp
-    if ($path -match 'cpp[\\/].*[\\/](\d+)\.cpp') { return $matches[1] }
+    # python/src/1697.py  또는 python/1697.py
+    if ($p -match '(^|/)python(/src)?/(\d+)\.py$') { return $matches[3] }
 
-    # java/src/1504/Main.java
-    if ($path -match 'java[\\/].*[\\/](\d+)[\\/].*\.java') { return $matches[1] }
+    # cpp/src/1043.cpp 또는 cpp/1043.cpp
+    if ($p -match '(^|/)cpp(/src)?/(\d+)\.cpp$') { return $matches[3] }
+
+    # java/src/1504/Main.java 또는 java/1504/Main.java 또는 java/src/1504/Whatever.java
+    if ($p -match '(^|/)java(/src)?/(\d+)/.+\.java$') { return $matches[3] }
 
     return $null
 }
+
 
 function Get-Lang([string[]]$paths) {
     # 확장자 기준이 1순위 (가장 정확)
