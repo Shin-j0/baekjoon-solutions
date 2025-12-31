@@ -26,24 +26,20 @@ function Get-BojNumber([string]$path) {
     return $null
 }
 
-function Get-Lang([string]$path) {
-    if ($path -match 'python') { return "Python" }
-    if ($path -match 'cpp')    { return "C++" }
-    if ($path -match 'java')   { return "Java" }
+function Get-Lang([string[]]$paths) {
+    # 확장자 기준이 1순위 (가장 정확)
+    if ($paths | Where-Object { $_ -match '\.cpp$' })  { return "C++" }
+    if ($paths | Where-Object { $_ -match '\.java$' }) { return "Java" }
+    if ($paths | Where-Object { $_ -match '\.py$' })   { return "Python" }
+
+    # 보조: 경로 기준
+    if ($paths | Where-Object { $_ -match '(^|[\\/])cpp([\\/]|$)' })    { return "C++" }
+    if ($paths | Where-Object { $_ -match '(^|[\\/])java([\\/]|$)' })   { return "Java" }
+    if ($paths | Where-Object { $_ -match '(^|[\\/])python([\\/]|$)' }) { return "Python" }
+
     return "Code"
 }
 
-# BOJ 번호별 그룹
-$groups = @{}
-foreach ($f in $changed) {
-    $boj = Get-BojNumber $f
-    if (-not $boj) { continue }
-
-    if (-not $groups.ContainsKey($boj)) {
-        $groups[$boj] = New-Object System.Collections.Generic.List[string]
-    }
-    $groups[$boj].Add($f)
-}
 
 if ($groups.Count -eq 0) {
     Write-Host "No BOJ-numbered files found to commit."
