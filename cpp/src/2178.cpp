@@ -28,6 +28,7 @@ int main(){
 
 	weight[0][0] = 1;
 	stack.push(position(0,0));
+	
 	while(!stack.empty()){
 		position cur = stack.top();
 		stack.pop();
