@@ -10,6 +10,7 @@ https://www.acmicpc.net/problem/1012
   * 
 """
 
+
 from collections import deque
 def bfs(arr,x,y):
     dx = [1,0,-1,0]
