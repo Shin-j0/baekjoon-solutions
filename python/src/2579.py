@@ -10,6 +10,7 @@ https://www.acmicpc.net/problem/2579
   * 
 """
 
+
 n = int(input())
 data = [0]*301
 dp = [0]*301
