@@ -1,9 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+
 using namespace std;
+
 vector<vector<int>> graph;
 vector<vector<int>> weight;
+
 int di[] = {1,0,-1,0};
 int dj[] = {0,1,0,-1};
 class position{
