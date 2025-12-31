@@ -14,20 +14,21 @@ if (-not $changed) {
 }
 
 function Get-BojNumber([string]$path) {
-    # normalize slashes
-    $p = $path -replace '\\','/'
+    $p = $path -replace '\\','/'   # 윈도우 경로 통일
 
-    # python/src/1697.py  또는 python/1697.py
-    if ($p -match '(^|/)python(/src)?/(\d+)\.py$') { return $matches[3] }
+    # python/src/1697.py 또는 python/1697.py
+    if ($p -match '(^|/)python(/src)?/(\d+)\.py$')  { return $matches[3] }
 
     # cpp/src/1043.cpp 또는 cpp/1043.cpp
-    if ($p -match '(^|/)cpp(/src)?/(\d+)\.cpp$') { return $matches[3] }
+    if ($p -match '(^|/)cpp(/src)?/(\d+)\.cpp$')    { return $matches[3] }
 
-    # java/src/1504/Main.java 또는 java/1504/Main.java 또는 java/src/1504/Whatever.java
+    # java/src/1504/Main.java 또는 java/1504/Main.java
     if ($p -match '(^|/)java(/src)?/(\d+)/.+\.java$') { return $matches[3] }
 
     return $null
 }
+Write-Host "DEBUG changed files: $($changed -join ', ')"
+
 
 
 function Get-Lang([string[]]$paths) {
