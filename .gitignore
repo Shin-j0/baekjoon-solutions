@@ -1,0 +1,13 @@
+# build artifacts
+build/
+*.exe
+*.o
+*.obj
+*.pdb
+*.ilk
+
+# vscode
+.vscode/
+
+# windows
+.DS_Store
