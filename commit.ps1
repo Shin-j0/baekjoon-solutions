@@ -1,4 +1,4 @@
-# commit.ps1 - group changes by BOJ problem number (SAFE VERSION)
+# commit.ps1 - group changes by BOJ problem number and commit per problem (SAFE)
 $ErrorActionPreference = "Stop"
 
 # 변경 파일 목록 (추적 + 미추적, 삭제 제외)
@@ -6,33 +6,25 @@ $changed = git status --porcelain | Where-Object {
     $_ -notmatch '^D '
 } | ForEach-Object {
     $_.Substring(3).Trim()
-}
+} | Where-Object { $_ -ne "" }
 
-if (-not $changed) {
+if (-not $changed -or $changed.Count -eq 0) {
     Write-Host "No changes to commit."
     exit 0
 }
 
 function Get-BojNumber([string]$path) {
-    $p = $path -replace '\\','/'   # 윈도우 경로 통일
+    $p = $path -replace '\\','/'   # normalize
 
-    # python/src/1697.py 또는 python/1697.py
-    if ($p -match '(^|/)python(/src)?/(\d+)\.py$')  { return $matches[3] }
-
-    # cpp/src/1043.cpp 또는 cpp/1043.cpp
-    if ($p -match '(^|/)cpp(/src)?/(\d+)\.cpp$')    { return $matches[3] }
-
-    # java/src/1504/Main.java 또는 java/1504/Main.java
-    if ($p -match '(^|/)java(/src)?/(\d+)/.+\.java$') { return $matches[3] }
+    if ($p -match '(^|/)cpp(/src)?/(\d+)\.cpp$')       { return $matches[3] }
+    if ($p -match '(^|/)python(/src)?/(\d+)\.py$')     { return $matches[3] }
+    if ($p -match '(^|/)java(/src)?/(\d+)/.+\.java$')  { return $matches[3] }
 
     return $null
 }
-Write-Host "DEBUG changed files: $($changed -join ', ')"
-
-
 
 function Get-Lang([string[]]$paths) {
-    # 확장자 기준이 1순위 (가장 정확)
+    # 확장자 기준 1순위
     if ($paths | Where-Object { $_ -match '\.cpp$' })  { return "C++" }
     if ($paths | Where-Object { $_ -match '\.java$' }) { return "Java" }
     if ($paths | Where-Object { $_ -match '\.py$' })   { return "Python" }
@@ -45,6 +37,17 @@ function Get-Lang([string[]]$paths) {
     return "Code"
 }
 
+$groups = @{}
+
+foreach ($f in $changed) {
+    $boj = Get-BojNumber $f
+    if (-not $boj) { continue }
+
+    if (-not $groups.ContainsKey($boj)) {
+        $groups[$boj] = New-Object System.Collections.Generic.List[string]
+    }
+    $groups[$boj].Add($f)
+}
 
 if ($groups.Count -eq 0) {
     Write-Host "No BOJ-numbered files found to commit."
@@ -60,7 +63,7 @@ foreach ($boj in ($groups.Keys | Sort-Object {[int]$_})) {
 
     if (-not (git diff --cached --name-only)) { continue }
 
-    $lang = Get-Lang $files[0]
+    $lang = Get-Lang $files
     git commit -m "solve: BOJ $boj ($lang)"
     Write-Host "✅ Committed: BOJ $boj ($lang)"
 }
