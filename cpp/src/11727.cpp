@@ -1,3 +1,15 @@
+/*
+[BOJ] 11727 - 2×n 타일링
+https://www.acmicpc.net/problem/11727
+- Algorithm: Dynamic Programming
+- Data Structure: vector
+- Time: O(N)
+- Space: O(N)
+- Trick:
+  * 
+  * 
+*/
+
 #include<iostream>
 #include<vector>
 using namespace std;
