@@ -54,6 +54,7 @@ int main(){
 	cout<<countArea(g0)<<" "<<countArea(g1)<<endl;
 
 }
+
 /* 
 bfs로 구현
 
