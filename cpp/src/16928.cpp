@@ -22,15 +22,15 @@ int main(){
     int n,m;
     cin >> n >> m;
     int ladder[101];
-    int count[101];
+    int dist[101];
     fill(ladder,ladder+101,0);
-    fill(count,count+101,1e9);
+    fill(dist,dist+101,1e9);
 
     for(int i=0; i<n+m; ++i){
       int temp;
       cin >> temp >> ladder[temp];
     }
-    count[0] = count[1] = 0;
+    dist[0] = dist[1] = 0;
     queue<int> q;
     q.push(1);
     while(!q.empty()){
@@ -39,10 +39,10 @@ int main(){
         int nc = cur + i;
         if(nc>100) continue;
         if(ladder[nc]) nc = ladder[nc];
-        if(count[cur]+1 > count[nc]) continue;
+        if(dist[cur]+1 > dist[nc]) continue;
         q.push(nc);
-        count[nc] = count[cur]+1;
+        dist[nc] = dist[cur]+1;
       }
     }
-    cout<<count[100];
+    cout<<dist[100];
 }
