@@ -36,24 +36,25 @@ int main(){
 */
 
 int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
     int n, m;
     cin >> n >> m;
     string s;
     cin >> s;
     int count = 0;
-   for(int i=0; i<m; ++i){
-        int c = 0;
-        if(s[i] == 'O') continue;
+    int c = 0;
+   for(int i=1; i<m-1;++i){
+        if(s[i-1] == 'I' && s[i] == 'O' && s[i+1] == 'I')
+        {
+            c++;
+            if(c >= n) count++;
+            i++;
+        }
         else {
-            int index = i;
-            while(s[index+1] == 'O' && s[index+2] == 'I'){
-                c++;
-                if(c == n){
-                    count++;
-                    break;
-                }
-                index += 2;
-            }
+            c=0;
         }
     }
 cout << count << "\n";
